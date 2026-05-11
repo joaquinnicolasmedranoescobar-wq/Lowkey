@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class DashboardSummary(BaseModel):
@@ -12,3 +12,14 @@ class VehicleSummary(BaseModel):
     total_maintenance_cost: float | None = None
     total_expense_cost: float | None = None
     pending_items: int | None = None
+
+
+class ExpenseTrendPoint(BaseModel):
+    category: str | None = None
+    variation_percentage: float | None = None
+
+
+class DashboardStatistics(BaseModel):
+    average_cost_per_vehicle: float | None = None
+    quarterly_maintenance_count: int | None = None
+    expense_trend: list[ExpenseTrendPoint] = Field(default_factory=list)
