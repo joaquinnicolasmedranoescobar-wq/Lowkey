@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.schemas.expense import ExpenseCreate, ExpenseRead, ExpenseUpdate
+from app.schemas.expense import ExpenseBudgetSummary, ExpenseCreate, ExpenseRead, ExpenseUpdate
 from app.services import expense_service
 
 
@@ -10,6 +10,11 @@ router = APIRouter(prefix="/expenses", tags=["Expenses"])
 @router.get("/vehicle/{vehicle_id}", response_model=list[ExpenseRead])
 def list_expenses(vehicle_id: int) -> list[ExpenseRead]:
     return expense_service.list_expenses(vehicle_id)
+
+
+@router.get("/vehicle/{vehicle_id}/monthly-summary", response_model=ExpenseBudgetSummary)
+def get_monthly_summary(vehicle_id: int) -> ExpenseBudgetSummary:
+    return expense_service.get_monthly_summary(vehicle_id)
 
 
 @router.post("", response_model=ExpenseRead, status_code=status.HTTP_201_CREATED)

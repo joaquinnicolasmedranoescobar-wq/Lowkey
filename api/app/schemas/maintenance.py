@@ -26,3 +26,10 @@ class MaintenanceUpdate(MaintenanceBase):
 
 class MaintenanceRead(MaintenanceBase):
     id: int | None = None
+
+
+class MaintenanceAlert(BaseModel):
+    vehicle_id: int | None = None
+    next_task: str | None = None
+    due_in_days: int | None = None
+    due_in_km: int | None = None
