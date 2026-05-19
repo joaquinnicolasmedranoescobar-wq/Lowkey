@@ -660,3 +660,13 @@ textarea {
     max-width: none;
   }
 }
+
+select option {
+  background-color: var(--surface-strong);
+  color: var(--text);
+}
+
+select option:checked {
+  background-color: var(--accent);
+  color: #04100a;
+}
