@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Lowkey — Gestión del vehículo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Epilogue:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060810;
+  --bg2:#0d1120;
+  --bg3:#131829;
+  --surface:rgba(255,255,255,0.035);
+  --surface2:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --ink:#f0f2ff;
+  --ink2:#9aa3c2;
+  --ink3:#4f587a;
+  --a:#7b6cff;
+  --a2:#5a4ee0;
+  --a3:#3d34b8;
+  --ag:rgba(123,108,255,0.12);
+  --g:#3dcfa3;
+  --g2:#1e9e75;
+  --gg:rgba(61,207,163,0.1);
+  --o:#f5a623;
+  --og:rgba(245,166,35,0.1);
+  --r:#ff5f57;
+  --rg:rgba(255,95,87,0.1);
+  --rad:14px;
+  --rad2:22px;
+  --rad3:32px;
+  --syne:'Syne',sans-serif;
+  --epi:'Epilogue',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--epi);background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.6}
+button,input,select,textarea{font:inherit}
+button{border:0;cursor:pointer;background:none}
+
+/* grain */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.6}
+
+/* orbs */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(100px);animation:drift 18s ease-in-out infinite alternate}
+.o1{width:700px;height:500px;top:-200px;left:-200px;background:radial-gradient(circle,rgba(123,108,255,0.15),transparent 70%)}
+.o2{width:600px;height:600px;bottom:-200px;right:-100px;background:radial-gradient(circle,rgba(61,207,163,0.1),transparent 70%);animation-delay:-9s}
+.o3{width:400px;height:400px;top:40%;left:42%;background:radial-gradient(circle,rgba(245,166,35,0.06),transparent 70%);animation-delay:-4s}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(30px,20px)}}
+
+/* ─── LAYOUT ─── */
+.shell{position:relative;z-index:1;display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  display:flex;flex-direction:column;padding:1.75rem 1.5rem;
+  border-right:1px solid var(--border);
+  background:rgba(6,8,16,0.7);backdrop-filter:blur(40px);
+  position:sticky;top:0;height:100vh;overflow-y:auto
+}
+.brand{display:flex;align-items:center;gap:.875rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.brand-mark{
+  width:40px;height:40px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--a),var(--a3));
+  display:grid;place-items:center;
+  font-family:var(--syne);font-weight:800;font-size:.95rem;letter-spacing:-.02em;color:#fff
+}
+.brand-sub{font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--a);display:block;margin-bottom:.1rem}
+.brand h1{font-family:var(--syne);font-size:1rem;font-weight:700;color:var(--ink);line-height:1}
+.sidebar-copy{font-size:.78rem;color:var(--ink3);line-height:1.7;margin-bottom:1.5rem}
+.step-nav{display:flex;flex-direction:column;gap:3px;flex:1}
+.step-btn{
+  display:flex;align-items:center;gap:.8rem;width:100%;
+  padding:.65rem .9rem;border-radius:var(--rad);
+  color:var(--ink3);font-size:.82rem;font-weight:400;text-align:left;
+  transition:all .2s ease;position:relative;overflow:hidden
+}
+.step-btn .num{
+  font-family:var(--syne);font-size:.62rem;font-weight:700;
+  width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;
+  background:var(--surface2);color:var(--ink3);transition:all .2s ease
+}
+.step-btn:hover{color:var(--ink);background:var(--surface)}
+.step-btn:hover .num{background:rgba(123,108,255,.2);color:var(--a)}
+.step-btn.active{color:var(--ink);background:linear-gradient(90deg,rgba(123,108,255,.15),transparent)}
+.step-btn.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;border-radius:2px;background:var(--a)}
+.step-btn.active .num{background:var(--a);color:#fff}
+.status-card{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.sc-tag{font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--a);display:block;margin-bottom:.4rem}
+#statusLabel{font-size:.82rem;color:var(--ink2);line-height:1.5;font-style:italic}
+
+/* ─── MAIN ─── */
+.main{display:flex;flex-direction:column;overflow:hidden}
+.topbar{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;
+  padding:1.75rem 2.25rem;border-bottom:1px solid var(--border);
+  background:rgba(6,8,16,.5);backdrop-filter:blur(30px);
+  position:sticky;top:0;z-index:10
+}
+.tb-eyebrow{font-size:.62rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--a);display:block;margin-bottom:.35rem}
+.topbar h2{font-family:var(--syne);font-size:clamp(1.2rem,1.8vw,1.7rem);font-weight:700;color:var(--ink);line-height:1.1;max-width:28ch}
+.topbar-actions{display:flex;gap:.65rem;flex-shrink:0}
+
+/* ─── BUTTONS ─── */
+.btn-p{
+  padding:.6rem 1.25rem;border-radius:999px;
+  background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;
+  font-size:.8rem;font-weight:600;letter-spacing:.02em;
+  transition:all .2s ease;box-shadow:0 4px 24px rgba(123,108,255,.3)
+}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(123,108,255,.4)}
+.btn-p:active{transform:translateY(0)}
+.btn-g{
+  padding:.6rem 1.25rem;border-radius:999px;
+  border:1px solid var(--border2);color:var(--ink2);
+  font-size:.8rem;font-weight:400;transition:all .2s ease
+}
+.btn-g:hover{border-color:var(--a);color:var(--a);transform:translateY(-1px)}
+
+/* ─── SCREEN ─── */
+.screen{display:none;padding:2rem 2.25rem;animation:fadeUp .35s ease both}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.screen-header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.75rem}
+.sh-tag{font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--a);display:block;margin-bottom:.3rem}
+.screen-header h3{font-family:var(--syne);font-size:1.9rem;font-weight:800;color:var(--ink);line-height:1}
+
+/* ─── PANEL ─── */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad2);padding:1.5rem}
+.panel-label{font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:1rem}
+
+/* ─── INICIO ─── */
+.hero{display:grid;grid-template-columns:1.4fr .6fr;gap:1.25rem;margin-bottom:1.25rem}
+.hero-main{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad3);padding:2.5rem;
+  position:relative;overflow:hidden
+}
+.hero-main::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(123,108,255,.12),transparent 70%);
+  pointer-events:none
+}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin-bottom:1rem}
+.hero-tag span{width:6px;height:6px;border-radius:50%;background:var(--a);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.hero-main h3{font-family:var(--syne);font-size:clamp(1.6rem,2.5vw,2.4rem);font-weight:800;color:var(--ink);line-height:1.05;max-width:22ch;margin-bottom:.9rem}
+.hero-main p{color:var(--ink2);font-size:.88rem;line-height:1.75;max-width:54ch;margin-bottom:1.5rem}
+.hero-actions{display:flex;gap:.75rem;flex-wrap:wrap}
+.hero-right{display:flex;flex-direction:column;gap:1rem}
+.kpi{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad2);
+  padding:1.25rem 1.4rem;flex:1;cursor:default;
+  transition:border-color .2s ease,transform .2s ease
+}
+.kpi:hover{border-color:var(--border2);transform:translateY(-2px)}
+.kpi.accent{background:linear-gradient(135deg,rgba(123,108,255,.1),rgba(123,108,255,.03));border-color:rgba(123,108,255,.25)}
+.kpi-label{font-size:.68rem;color:var(--ink3);letter-spacing:.08em;display:block;margin-bottom:.35rem}
+.kpi-value{font-family:var(--syne);font-size:2rem;font-weight:800;color:var(--ink);line-height:1}
+.kpi.accent .kpi-value{color:var(--a)}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.ic{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad2);padding:1.5rem;
+  transition:all .25s ease;position:relative;overflow:hidden;cursor:default
+}
+.ic::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(135deg,rgba(123,108,255,.06),transparent);
+  opacity:0;transition:opacity .25s ease
+}
+.ic:hover{border-color:rgba(123,108,255,.3);transform:translateY(-3px)}
+.ic:hover::after{opacity:1}
+.ic .ic-num{font-family:var(--syne);font-size:2.5rem;font-weight:800;color:rgba(123,108,255,.15);line-height:1;margin-bottom:.5rem}
+.ic-tag{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:.4rem}
+.ic h4{font-family:var(--syne);font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:.4rem}
+.ic p{font-size:.82rem;color:var(--ink3);line-height:1.65}
+
+/* ─── TWO COL ─── */
+.two-col{display:grid;grid-template-columns:1fr 360px;gap:1.25rem}
+
+/* ─── FORM ─── */
+.form-panel{display:grid;gap:1.1rem;align-content:start}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fg{display:grid;gap:.4rem}
+.fg label{font-size:.72rem;font-weight:600;color:var(--ink2);letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:var(--rad);color:var(--ink);padding:.7rem .95rem;
+  font-size:.875rem;transition:all .2s ease;outline:none;width:100%
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:rgba(123,108,255,.5);background:rgba(123,108,255,.05);
+  box-shadow:0 0 0 3px rgba(123,108,255,.1)
+}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--ink3)}
+.fg textarea{resize:vertical;min-height:100px}
+.fg select option{background:var(--bg2)}
+.form-actions{display:flex;gap:.75rem;padding-top:.25rem}
+
+/* ─── SIDE PANEL ─── */
+.side-panel{display:grid;gap:1.25rem;align-content:start}
+.vcard{
+  background:linear-gradient(135deg,rgba(123,108,255,.1),rgba(123,108,255,.03));
+  border:1px solid rgba(123,108,255,.25);border-radius:var(--rad2);
+  padding:1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem
+}
+.vc-name{font-family:var(--syne);font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:.2rem}
+.vc-plate{font-size:.75rem;color:var(--ink3);letter-spacing:.1em}
+.badge{display:inline-flex;align-items:center;padding:.3rem .75rem;border-radius:999px;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.badge-g{background:rgba(61,207,163,.12);color:#3dcfa3;border:1px solid rgba(61,207,163,.25)}
+.badge-v{background:rgba(123,108,255,.12);color:#b4aaff;border:1px solid rgba(123,108,255,.25)}
+.badge-o{background:rgba(245,166,35,.12);color:#f5a623;border:1px solid rgba(245,166,35,.25)}
+.badge-r{background:rgba(255,95,87,.12);color:#ff7f79;border:1px solid rgba(255,95,87,.25)}
+.check-list{display:grid;gap:.5rem}
+.ci{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--ink2)}
+.ci::before{content:'';width:18px;height:18px;border-radius:50%;flex-shrink:0;background:rgba(61,207,163,.12);border:1px solid rgba(61,207,163,.3);background-image:url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%233dcfa3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.ms{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:.85rem}
+.ms-l{font-size:.65rem;color:var(--ink3);display:block;margin-bottom:.2rem}
+.ms-v{font-family:var(--syne);font-size:.95rem;font-weight:700;color:var(--ink)}
+
+/* ─── TIMELINE ─── */
+.tl{display:grid;gap:.65rem}
+.tl-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-left:2px solid var(--a);border-radius:0 var(--rad) var(--rad) 0;
+  padding:.8rem 1rem
+}
+.tl-t{font-size:.85rem;color:var(--ink);font-weight:500;margin-bottom:.15rem}
+.tl-m{font-size:.72rem;color:var(--ink3)}
+.alert{background:rgba(123,108,255,.06);border:1px solid rgba(123,108,255,.2);border-radius:var(--rad2);padding:1rem}
+.alert-t{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--a);margin-bottom:.3rem}
+.alert p{font-size:.8rem;color:var(--ink2);line-height:1.55}
+
+/* ─── GASTOS ─── */
+.exp-layout{display:grid;grid-template-columns:1fr 320px;gap:1.25rem}
+.budget-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:.6rem}
+.budget-num{font-family:var(--syne);font-size:2rem;font-weight:800;color:var(--ink)}
+.budget-of{font-size:.85rem;color:var(--ink3);font-family:var(--epi)}
+.prog{height:5px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-bottom:1.5rem}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--a),var(--g));border-radius:inherit}
+.exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+.ec{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad2);padding:1rem;transition:border-color .2s ease}
+.ec:hover{border-color:var(--border2)}
+.ec-l{font-size:.68rem;color:var(--ink3);display:block;margin-bottom:.4rem}
+.ec-v{font-family:var(--syne);font-size:1.35rem;font-weight:800;color:var(--ink)}
+
+/* ─── ESTADÍSTICAS ─── */
+.stats-layout{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rad2);padding:1.5rem;transition:border-color .2s ease}
+.st:hover{border-color:var(--border2)}
+.st-label{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:.5rem}
+.st-big{font-family:var(--syne);font-size:3rem;font-weight:800;line-height:1;margin-bottom:1.25rem}
+.st-big.c-v{color:var(--a)}
+.st-big.c-g{color:var(--g)}
+.bar-wrap{display:flex;align-items:flex-end;gap:6px;height:80px}
+.bar{flex:1;border-radius:5px 5px 3px 3px;transition:height .6s cubic-bezier(.34,1.56,.64,1)}
+.bv{background:linear-gradient(180deg,var(--a),rgba(123,108,255,.2))}
+.bg{background:linear-gradient(180deg,var(--g),rgba(61,207,163,.2))}
+.trend-list{display:grid;gap:.5rem}
+.tr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--rad)}
+.tr span{font-size:.82rem;color:var(--ink2)}
+.tv{font-family:var(--syne);font-size:.85rem;font-weight:700}
+.tv.up{color:var(--r)}
+.tv.dn{color:var(--g)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){.shell{grid-template-columns:220px 1fr}}
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto;order:2;flex-direction:row;flex-wrap:wrap;padding:1.25rem;gap:.75rem}
+  .brand{margin-bottom:0;padding-bottom:0;border-bottom:0}
+  .sidebar-copy{display:none}
+  .step-nav{flex-direction:row;flex-wrap:wrap;flex:none}
+  .step-btn{width:auto;padding:.45rem .7rem}
+  .status-card{display:none}
+  .main{order:1}
+  .hero{grid-template-columns:1fr}
+  .two-col,.exp-layout{grid-template-columns:1fr}
+  .card-grid,.stats-layout,.exp-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:580px){
+  .screen{padding:1.25rem}
+  .topbar{padding:1.25rem;flex-direction:column;align-items:flex-start}
+  .card-grid,.stats-layout,.exp-grid,.form-row,.mini-grid{grid-template-columns:1fr}
+  .topbar h2{max-width:none}
+}
+</style>
+</head>
+<body>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<div class="shell">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">LK</div>
+      <div>
+        <span class="brand-sub">Lowkey</span>
+        <h1>Gestión del vehículo</h1>
+      </div>
+    </div>
+    <p class="sidebar-copy">Plataforma de control total para registrar coches, mantenimientos, gastos y estadísticas en un único flujo.</p>
+    <nav class="step-nav" aria-label="Flujo principal">
+      <button class="step-btn active" data-screen="inicio"><span class="num">01</span>Inicio</button>
+      <button class="step-btn" data-screen="coches"><span class="num">02</span>Registrar coche</button>
+      <button class="step-btn" data-screen="mantenimientos"><span class="num">03</span>Mantenimientos</button>
+      <button class="step-btn" data-screen="gastos"><span class="num">04</span>Gastos</button>
+      <button class="step-btn" data-screen="estadisticas"><span class="num">05</span>Estadísticas</button>
+    </nav>
+    <div class="status-card">
+      <span class="sc-tag">Estado del flujo</span>
+      <p id="statusLabel">Listo para registrar tu primer coche</p>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <span class="tb-eyebrow">Prototipo web inicial</span>
+        <h2>Diseño de pantallas para la gestión integral del mantenimiento</h2>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-g" data-screen="coches">Empezar flujo</button>
+        <button class="btn-p" data-screen="estadisticas">Ver resumen</button>
+      </div>
+    </header>
+
+    <!-- ══ INICIO ══ -->
+    <section class="screen active" id="inicio" aria-labelledby="inicio-title">
+      <div class="hero">
+        <div class="hero-main">
+          <div class="hero-tag"><span></span>Pantalla 1 — Bienvenida</div>
+          <h3 id="inicio-title">Una visión clara de tu coche, tus gastos y el mantenimiento pendiente</h3>
+          <p>La plataforma prioriza acciones rápidas: dar de alta el vehículo, registrar intervenciones y consultar el estado económico y mecánico en tiempo real.</p>
+          <div class="hero-actions">
+            <button class="btn-p" data-screen="coches">Registrar vehículo</button>
+            <button class="btn-g" data-screen="mantenimientos">Añadir mantenimiento</button>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="kpi accent">
+            <span class="kpi-label">Vehículos activos</span>
+            <span class="kpi-value">3</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Gasto del mes</span>
+            <span class="kpi-value">248€</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Mantenimientos próximos</span>
+            <span class="kpi-value">2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <article class="ic">
+          <div class="ic-num">01</div>
+          <p class="ic-tag">Acción rápida</p>
+          <h4>Alta de coche</h4>
+          <p>Nombre, matrícula, kilometraje y fotografía principal para identificar cada vehículo.</p>
+        </article>
+        <article class="ic">
+          <div class="ic-num">02</div>
+          <p class="ic-tag">Control operativo</p>
+          <h4>Mantenimientos</h4>
+          <p>Revisiones, aceite, neumáticos, ITV y cualquier intervención con fecha y coste.</p>
+        </article>
+        <article class="ic">
+          <div class="ic-num">03</div>
+          <p class="ic-tag">Seguimiento</p>
+          <h4>Gastos y estadísticas</h4>
+          <p>Historial económico, categorías de gasto y gráficos para detectar patrones.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ══ COCHES ══ -->
+    <section class="screen" id="coches" aria-labelledby="coches-title">
+      <div class="screen-header">
+        <div>
+          <span class="sh-tag">Pantalla 2</span>
+          <h3 id="coches-title">Registrar vehículo</h3>
+        </div>
+        <button class="btn-g" data-screen="mantenimientos">Siguiente →</button>
+      </div>
+      <div class="two-col">
+        <form class="panel form-panel" id="vehicleForm">
+          <div class="form-row">
+            <div class="fg"><label>Nombre del coche</label><input type="text" name="vehicleName" placeholder="Ej. Golf Azul" required></div>
+            <div class="fg"><label>Matrícula</label><input type="text" name="plate" placeholder="1234 ABC" required></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Marca</label><input type="text" name="brand" placeholder="Volkswagen" required></div>
+            <div class="fg"><label>Modelo</label><input type="text" name="model" placeholder="Golf" required></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Kilometraje actual</label><input type="number" name="mileage" min="0" placeholder="154 000" required></div>
+            <div class="fg"><label>Combustible</label>
+              <select name="fuelType">
+                <option>Gasolina</option><option>Diésel</option><option>Híbrido</option><option>Eléctrico</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>Observaciones</label><textarea name="notes" rows="4" placeholder="ITV, historial, detalles relevantes..."></textarea></div>
+          <div class="form-actions">
+            <button type="submit" class="btn-p">Guardar coche</button>
+            <button type="button" class="btn-g" data-screen="inicio">Volver</button>
+          </div>
+        </form>
+        <aside class="panel side-panel">
+          <p class="panel-label">Vista previa</p>
+          <div class="vcard">
+            <div>
+              <p class="vc-name" id="previewName">Golf Azul</p>
+              <p class="vc-plate" id="previewPlate">1234 ABC</p>
+            </div>
+            <span class="badge badge-g">Activo</span>
+          </div>
+          <div class="check-list">
+            <div class="ci">Datos básicos del vehículo</div>
+            <div class="ci">Registro de kilometraje</div>
+            <div class="ci">Notas internas y documentación</div>
+          </div>
+          <div class="mini-grid">
+            <div class="ms"><span class="ms-l">Último servicio</span><span class="ms-v">12 días</span></div>
+            <div class="ms"><span class="ms-l">Próxima revisión</span><span class="ms-v">1.200 km</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ══ MANTENIMIENTOS ══ -->
+    <section class="screen" id="mantenimientos" aria-labelledby="mant-title">
+      <div class="screen-header">
+        <div>
+          <span class="sh-tag">Pantalla 3</span>
+          <h3 id="mant-title">Añadir mantenimiento</h3>
+        </div>
+        <button class="btn-g" data-screen="gastos">Pasar a gastos →</button>
+      </div>
+      <div class="two-col">
+        <form class="panel form-panel" id="maintenanceForm">
+          <div class="form-row">
+            <div class="fg"><label>Tipo de mantenimiento</label>
+              <select name="type">
+                <option>Cambio de aceite</option><option>Neumáticos</option><option>Frenos</option><option>ITV</option><option>Revisión general</option>
+              </select>
+            </div>
+            <div class="fg"><label>Fecha</label><input type="date" name="date" required></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Kilómetros</label><input type="number" name="km" min="0" placeholder="154 980" required></div>
+            <div class="fg"><label>Coste (€)</label><input type="number" name="cost" min="0" step="0.01" placeholder="89.90" required></div>
+          </div>
+          <div class="fg"><label>Descripción</label><textarea name="description" rows="4" placeholder="Detalle del trabajo realizado..."></textarea></div>
+          <div class="form-actions">
+            <button type="submit" class="btn-p">Guardar mantenimiento</button>
+            <button type="button" class="btn-g" data-screen="coches">Volver</button>
+          </div>
+        </form>
+        <aside class="panel side-panel">
+          <p class="panel-label">Historial reciente</p>
+          <div class="tl">
+            <article class="tl-item"><p class="tl-t">Cambio de aceite</p><p class="tl-m">154.200 km &middot; 82 &euro;</p></article>
+            <article class="tl-item"><p class="tl-t">Filtros y revisión</p><p class="tl-m">153.100 km &middot; 124 &euro;</p></article>
+            <article class="tl-item"><p class="tl-t">Neumáticos delanteros</p><p class="tl-m">151.900 km &middot; 260 &euro;</p></article>
+          </div>
+          <div class="alert">
+            <p class="alert-t">Próximo aviso</p>
+            <p>ITV dentro de 30 días y revisión de neumáticos en 900 km.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ══ GASTOS ══ -->
+    <section class="screen" id="gastos" aria-labelledby="gastos-title">
+      <div class="screen-header">
+        <div>
+          <span class="sh-tag">Pantalla 4</span>
+          <h3 id="gastos-title">Control de gastos</h3>
+        </div>
+        <button class="btn-g" data-screen="estadisticas">Ver estadísticas →</button>
+      </div>
+      <div class="exp-layout">
+        <article class="panel">
+          <div class="budget-row">
+            <div>
+              <p class="panel-label">Presupuesto mensual</p>
+              <p class="budget-num">248 € <span class="budget-of">de 400 €</span></p>
+            </div>
+            <span class="badge badge-o">62% consumido</span>
+          </div>
+          <div class="prog"><div class="prog-fill" style="width:62%"></div></div>
+          <div class="exp-grid">
+            <div class="ec"><span class="ec-l">Mantenimiento</span><span class="ec-v">156 €</span></div>
+            <div class="ec"><span class="ec-l">Combustible</span><span class="ec-v">72 €</span></div>
+            <div class="ec"><span class="ec-l">ITV y tasas</span><span class="ec-v">20 €</span></div>
+          </div>
+        </article>
+        <article class="panel side-panel">
+          <p class="panel-label">Registro rápido</p>
+          <div class="check-list">
+            <div class="ci">Coste asociado a un coche concreto</div>
+            <div class="ci">Categoría y fecha del gasto</div>
+            <div class="ci">Posibilidad de añadir factura o nota</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ══ ESTADÍSTICAS ══ -->
+    <section class="screen" id="estadisticas" aria-labelledby="est-title">
+      <div class="screen-header">
+        <div>
+          <span class="sh-tag">Pantalla 5</span>
+          <h3 id="est-title">Estadísticas y visión global</h3>
+        </div>
+        <button class="btn-g" data-screen="inicio">← Volver al inicio</button>
+      </div>
+      <div class="stats-layout">
+        <article class="st">
+          <span class="st-label">Coste medio por coche</span>
+          <p class="st-big c-v">82€</p>
+          <div class="bar-wrap">
+            <div class="bar bv" style="height:42%" data-h="42"></div>
+            <div class="bar bv" style="height:68%" data-h="68"></div>
+            <div class="bar bv" style="height:54%" data-h="54"></div>
+          </div>
+        </article>
+        <article class="st">
+          <span class="st-label">Mantenimientos este trimestre</span>
+          <p class="st-big c-g">14</p>
+          <div class="bar-wrap">
+            <div class="bar bg" style="height:60%" data-h="60"></div>
+            <div class="bar bg" style="height:45%" data-h="45"></div>
+            <div class="bar bg" style="height:78%" data-h="78"></div>
+          </div>
+        </article>
+        <article class="st">
+          <span class="st-label">Tendencia del gasto</span>
+          <p class="st-big" style="color:var(--ink2);font-size:2rem">Tendencia</p>
+          <div class="trend-list">
+            <div class="tr"><span>Combustible</span><span class="tv up">+12%</span></div>
+            <div class="tr"><span>Revisiones</span><span class="tv dn">−8%</span></div>
+            <div class="tr"><span>Neumáticos</span><span class="tv up">+4%</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const msgs={inicio:'Listo para registrar tu primer coche',coches:'Alta de vehículo en progreso',mantenimientos:'Nuevo mantenimiento preparado',gastos:'Control de costes activo',estadisticas:'Resumen general disponible'};
+const statusEl=document.getElementById('statusLabel');
+const previewName=document.getElementById('previewName');
+const previewPlate=document.getElementById('previewPlate');
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
+  document.querySelectorAll('.step-btn').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));
+  if(statusEl)statusEl.textContent=msgs[id]||msgs.inicio;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='estadisticas')animateBars();
+}
+
+function animateBars(){
+  document.querySelectorAll('.bar').forEach((b,i)=>{
+    const h=b.dataset.h||'50';
+    b.style.height='0%';
+    setTimeout(()=>{b.style.height=h+'%'},i*80+100);
+  });
+}
+
+document.querySelectorAll('[data-screen]').forEach(el=>{
+  el.addEventListener('click',()=>showScreen(el.dataset.screen));
+});
+
+document.getElementById('vehicleForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const fd=new FormData(e.target);
+  previewName.textContent=fd.get('vehicleName')||'Nuevo vehículo';
+  previewPlate.textContent=fd.get('plate')||'Sin matrícula';
+  showScreen('mantenimientos');
+});
+
+document.getElementById('maintenanceForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  showScreen('gastos');
+});
+
+showScreen('inicio');
+</script>
+</body>
+</html>
