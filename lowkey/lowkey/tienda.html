@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lowkey | Tienda de piezas</title>
+  <link rel="stylesheet" href="assets/styles/tienda.css" />
+</head>
+<body>
+  <div class="backdrop backdrop-one"></div>
+  <div class="backdrop backdrop-two"></div>
+
+  <div class="shell">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">LK</div>
+        <div>
+          <p class="eyebrow">Lowkey</p>
+          <h1>Tienda de piezas</h1>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Categorías</h3>
+        <div class="filter-chip-group" id="catFilters">
+          <button class="filter-chip active" data-cat="all">Todas</button>
+          <button class="filter-chip" data-cat="motor">Motor</button>
+          <button class="filter-chip" data-cat="frenos">Frenos</button>
+          <button class="filter-chip" data-cat="suspension">Suspensión</button>
+          <button class="filter-chip" data-cat="electricidad">Electricidad</button>
+          <button class="filter-chip" data-cat="filtros">Filtros</button>
+          <button class="filter-chip" data-cat="neumaticos">Neumáticos</button>
+          <button class="filter-chip" data-cat="carroceria">Carrocería</button>
+          <button class="filter-chip" data-cat="iluminacion">Iluminación</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Precio (€)</h3>
+        <div class="price-range">
+          <input type="number" id="priceMin" placeholder="Mín." min="0" />
+          <input type="number" id="priceMax" placeholder="Máx." min="0" />
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Disponibilidad</h3>
+        <div class="filter-chip-group" id="stockFilters">
+          <button class="filter-chip active" data-stock="all">Todo</button>
+          <button class="filter-chip" data-stock="in">En stock</button>
+          <button class="filter-chip" data-stock="low">Pocas unidades</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Marcas</h3>
+        <div class="filter-chip-group" id="brandFilters">
+          <button class="filter-chip active" data-brand="all">Todas</button>
+          <button class="filter-chip" data-brand="Bosch">Bosch</button>
+          <button class="filter-chip" data-brand="Valeo">Valeo</button>
+          <button class="filter-chip" data-brand="Brembo">Brembo</button>
+          <button class="filter-chip" data-brand="NGK">NGK</button>
+          <button class="filter-chip" data-brand="Monroe">Monroe</button>
+          <button class="filter-chip" data-brand="Gates">Gates</button>
+          <button class="filter-chip" data-brand="Febi">Febi</button>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a class="nav-link" href="index.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+          </svg>
+          Dashboard
+        </a>
+        <a class="nav-link" href="auth/login.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Iniciar sesión
+        </a>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main">
+
+      <div class="topbar">
+        <div class="topbar-left">
+          <p class="eyebrow">Catálogo de recambios y accesorios</p>
+          <h2>Venta de piezas</h2>
+        </div>
+        <div class="topbar-right">
+          <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Buscar pieza, referencia, marca..." />
+            <select id="compatSelect">
+              <option value="">Todos los vehículos</option>
+              <option>Golf Azul</option>
+              <option>Seat León</option>
+              <option>Peugeot 308</option>
+            </select>
+          </div>
+          <button class="cart-btn" id="cartBtn">
+            🛒 Carrito
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-pill accent">
+          <span>Piezas en catálogo</span>
+          <strong id="totalCount">—</strong>
+        </div>
+        <div class="stat-pill">
+          <span>En stock hoy</span>
+          <strong>94%</strong>
+        </div>
+        <div class="stat-pill">
+          <span>Envío express</span>
+          <strong>24h</strong>
+        </div>
+        <div class="stat-pill">
+          <span>Devolución</span>
+          <strong>30 días</strong>
+        </div>
+      </div>
+
+      <div class="category-tabs" id="categoryTabs"></div>
+
+      <div class="products-header">
+        <span id="resultsLabel">Cargando...</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="featured">Destacados</option>
+          <option value="price-asc">Precio: menor a mayor</option>
+          <option value="price-desc">Precio: mayor a menor</option>
+          <option value="name">Nombre A–Z</option>
+          <option value="new">Más nuevos</option>
+        </select>
+      </div>
+
+      <div class="products-grid" id="productsGrid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <span>🔍</span>
+        <h3>Sin resultados</h3>
+        <p>Prueba con otros filtros o términos de búsqueda.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── DETAIL OVERLAY ── -->
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-panel" id="detailPanel">
+      <button class="detail-close" id="detailClose">✕</button>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <!-- ── CART OVERLAY ── -->
+  <div class="cart-overlay" id="cartOverlay">
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h3>🛒 Carrito</h3>
+        <button class="detail-close" id="cartClose">✕</button>
+      </div>
+      <div id="cartItems"></div>
+      <div class="cart-empty" id="cartEmpty">
+        <span>🛒</span>
+        Aún no hay piezas en el carrito.
+      </div>
+      <div class="cart-total" id="cartTotal" style="display:none;">
+        <div class="cart-total-row">
+          <span>Total</span>
+          <strong id="cartTotalAmount">0 €</strong>
+        </div>
+        <button class="cart-checkout">Confirmar pedido →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div class="toast" id="toast"></div>
+
+  <script src="assets/tienda.js"></script>
+</body>
+</html>

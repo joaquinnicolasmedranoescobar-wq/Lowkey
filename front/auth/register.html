@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lowkey | Crear cuenta</title>
+  <link rel="stylesheet" href="../assets/styles/logstyle.css" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo">LK</div>
+
+      <p class="eyebrow">Lowkey</p>
+      <h1>Crear cuenta</h1>
+      <p class="subtitle">
+        Registra tu usuario para empezar a gestionar tus vehículos.
+      </p>
+
+      <form id="registerForm">
+        <label>
+          Nombre completo
+          <input type="text" id="fullName" placeholder="Juan Pérez" required />
+        </label>
+
+        <label>
+          Usuario
+          <input type="text" id="username" placeholder="juaperez" required />
+        </label>
+
+        <label>
+          Contraseña
+          <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" required />
+        </label>
+
+        <label>
+          Confirmar contraseña
+          <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="new-password" required />
+        </label>
+
+        <button type="submit">Crear cuenta</button>
+
+        <p id="errorMessage" class="error"></p>
+      </form>
+
+      <p class="auth-switch">
+        ¿Ya tienes cuenta? <a class="auth-link" href="login.html">Ir al login</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="../assets/registerapp.js"></script>
+</body>
+</html>
