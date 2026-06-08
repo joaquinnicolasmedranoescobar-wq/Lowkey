@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lowkey | Hub de pantallas</title>
+  <link rel="stylesheet" href="assets/styles/styles.css" />
+</head>
+<body>
+  <div class="backdrop backdrop-one"></div>
+  <div class="backdrop backdrop-two"></div>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">LK</div>
+        <div>
+          <p class="eyebrow">Lowkey</p>
+          <h1>Gestión del vehículo</h1>
+        </div>
+      </div>
+
+      <p class="sidebar-copy">Hub principal para registrar coches, crear mantenimientos, controlar gastos y revisar estadísticas.</p>
+
+      <nav class="step-nav" aria-label="Flujo principal">
+        <button class="step-btn active" data-screen="inicio">
+          <span>01</span>
+          Inicio
+        </button>
+        <button class="step-btn" data-screen="coches">
+          <span>02</span>
+          Registrar coche
+        </button>
+        <button class="step-btn" data-screen="mantenimientos">
+          <span>03</span>
+          Mantenimientos
+        </button>
+        <button class="step-btn" data-screen="gastos">
+          <span>04</span>
+          Gastos
+        </button>
+        <button class="step-btn" data-screen="estadisticas">
+          <span>05</span>
+          Estadísticas
+        </button>
+      </nav>
+
+      <div class="sidebar-card">
+        <p class="label">Estado del flujo</p>
+        <strong id="statusLabel">Listo para registrar tu primer coche</strong>
+        <p>Este prototipo conecta el recorrido base de la plataforma.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Diseño de pantallas para la gestión integral del mantenimiento</p>
+          <h2>Punto de entrada del proyecto</h2>
+        </div>
+        <div class="topbar-actions">
+          <a class="ghost-btn" href="auth/login.html">Ir al login</a>
+          <a class="ghost-btn" href="tienda.html">🛒 Tienda de piezas</a>
+          <button class="ghost-btn" data-screen="coches">Empezar flujo</button>
+          <button class="primary-btn" data-screen="estadisticas">Ver resumen</button>
+        </div>
+      </header>
+
+      <section class="screen active" id="inicio" aria-labelledby="inicio-title">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <p class="label">Pantalla 1</p>
+            <h3 id="inicio-title">Una visión clara de tu coche, tus gastos y el mantenimiento pendiente</h3>
+            <p>La plataforma prioriza acciones rápidas: dar de alta el vehículo, registrar intervenciones y consultar el estado económico y mecánico.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" data-screen="coches">Registrar vehículo</button>
+              <button class="ghost-btn" data-screen="mantenimientos">Añadir mantenimiento</button>
+            </div>
+          </div>
+          <div class="hero-panel">
+            <div class="stat-pill">
+              <span>Vehículos activos</span>
+              <strong>3</strong>
+            </div>
+            <div class="stat-pill accent">
+              <span>Gasto del mes</span>
+              <strong>248 €</strong>
+            </div>
+            <div class="stat-pill">
+              <span>Mantenimientos próximos</span>
+              <strong>2</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid three-up">
+          <article class="info-card">
+            <p class="label">Acción rápida</p>
+            <h4>Alta de coche</h4>
+            <p>Nombre, matrícula, kilometraje y fotografía principal para identificar cada vehículo.</p>
+          </article>
+          <article class="info-card">
+            <p class="label">Control operativo</p>
+            <h4>Mantenimientos</h4>
+            <p>Revisiones, aceite, neumáticos, ITV y cualquier intervención con fecha y coste.</p>
+          </article>
+          <article class="info-card">
+            <p class="label">Seguimiento</p>
+            <h4>Gastos y estadísticas</h4>
+            <p>Historial económico, categorías de gasto y gráficos para detectar patrones.</p>
+          </article>
+          <article class="info-card" style="border-color:rgba(115,224,182,0.25);background:rgba(115,224,182,0.04);">
+            <p class="label">Recambios</p>
+            <h4>🛒 Tienda de piezas</h4>
+            <p>Busca y compra piezas originales y recambios con compatibilidad verificada para tu vehículo.</p>
+            <a href="tienda.html" class="primary-btn" style="display:inline-block;margin-top:1rem;padding:0.6rem 1.1rem;border-radius:999px;background:linear-gradient(135deg,#73e0b6,#4fcf9b);color:#04100a;font-weight:700;font-size:0.88rem;text-decoration:none;">Ver tienda →</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen" id="coches" aria-labelledby="coches-title">
+        <div class="screen-header">
+          <div>
+            <p class="label">Pantalla 2</p>
+            <h3 id="coches-title">Registrar vehículo</h3>
+          </div>
+          <button class="ghost-btn" data-screen="mantenimientos">Siguiente pantalla</button>
+        </div>
+
+        <div class="two-column">
+          <form class="panel form-panel" id="vehicleForm">
+            <div class="form-row">
+              <label>
+                Nombre del coche
+                <input type="text" name="vehicleName" placeholder="Ej. Golf Azul" required />
+              </label>
+              <label>
+                Matrícula
+                <input type="text" name="plate" placeholder="1234 ABC" required />
+              </label>
+            </div>
+            <div class="form-row">
+              <label>
+                Marca
+                <input type="text" name="brand" placeholder="Volkswagen" required />
+              </label>
+              <label>
+                Modelo
+                <input type="text" name="model" placeholder="Golf" required />
+              </label>
+            </div>
+            <div class="form-row">
+              <label>
+                Kilometraje actual
+                <input type="number" name="mileage" min="0" placeholder="154000" required />
+              </label>
+              <label>
+                Combustible
+                <select name="fuelType">
+                  <option>Gasolina</option>
+                  <option>Diésel</option>
+                  <option>Híbrido</option>
+                  <option>Eléctrico</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              Observaciones
+              <textarea name="notes" rows="4" placeholder="ITV, historial, detalles relevantes..."></textarea>
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="primary-btn">Guardar coche</button>
+              <button type="button" class="ghost-btn" data-screen="inicio">Volver</button>
+            </div>
+          </form>
+
+          <aside class="panel preview-panel">
+            <p class="label">Vista previa</p>
+            <div class="vehicle-card">
+              <div>
+                <h4 id="previewName">Golf Azul</h4>
+                <p id="previewPlate">1234 ABC</p>
+              </div>
+              <div class="badge">Activo</div>
+            </div>
+            <ul class="checklist">
+              <li>Datos básicos del vehículo</li>
+              <li>Registro de kilometraje</li>
+              <li>Notas internas y documentación</li>
+            </ul>
+            <div class="mini-summary">
+              <div>
+                <span>Último servicio</span>
+                <strong>12 días</strong>
+              </div>
+              <div>
+                <span>Próxima revisión</span>
+                <strong>1.200 km</strong>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="screen" id="mantenimientos" aria-labelledby="mantenimientos-title">
+        <div class="screen-header">
+          <div>
+            <p class="label">Pantalla 3</p>
+            <h3 id="mantenimientos-title">Añadir mantenimiento</h3>
+          </div>
+          <button class="ghost-btn" data-screen="gastos">Pasar a gastos</button>
+        </div>
+
+        <div class="two-column">
+          <form class="panel form-panel" id="maintenanceForm">
+            <div class="form-row">
+              <label>
+                Tipo de mantenimiento
+                <select name="type">
+                  <option>Cambio de aceite</option>
+                  <option>Neumáticos</option>
+                  <option>Frenos</option>
+                  <option>ITV</option>
+                  <option>Revisión general</option>
+                </select>
+              </label>
+              <label>
+                Fecha
+                <input type="date" name="date" required />
+              </label>
+            </div>
+            <div class="form-row">
+              <label>
+                Kilómetros
+                <input type="number" name="km" min="0" placeholder="154980" required />
+              </label>
+              <label>
+                Coste
+                <input type="number" name="cost" min="0" step="0.01" placeholder="89.90" required />
+              </label>
+            </div>
+            <label>
+              Descripción
+              <textarea name="description" rows="4" placeholder="Detalle del trabajo realizado..."></textarea>
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="primary-btn">Guardar mantenimiento</button>
+              <button type="button" class="ghost-btn" data-screen="coches">Volver</button>
+            </div>
+          </form>
+
+          <aside class="panel timeline-panel">
+            <p class="label">Historial reciente</p>
+            <div class="timeline">
+              <article>
+                <strong>Cambio de aceite</strong>
+                <p>154.200 km · 82 €</p>
+              </article>
+              <article>
+                <strong>Filtros y revisión</strong>
+                <p>153.100 km · 124 €</p>
+              </article>
+              <article>
+                <strong>Neumáticos delanteros</strong>
+                <p>151.900 km · 260 €</p>
+              </article>
+            </div>
+            <div class="alert-box">
+              <strong>Próximo aviso</strong>
+              <p>ITV dentro de 30 días y revisión de neumáticos en 900 km.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="screen" id="gastos" aria-labelledby="gastos-title">
+        <div class="screen-header">
+          <div>
+            <p class="label">Pantalla 4</p>
+            <h3 id="gastos-title">Control de gastos</h3>
+          </div>
+          <button class="ghost-btn" data-screen="estadisticas">Ver estadísticas</button>
+        </div>
+
+        <div class="grid expense-layout">
+          <article class="panel expense-main">
+            <div class="budget-header">
+              <div>
+                <p class="label">Presupuesto mensual</p>
+                <h4>248 € usados de 400 €</h4>
+              </div>
+              <span class="badge warning">62% consumido</span>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" style="width: 62%;"></div>
+            </div>
+            <div class="expense-cards">
+              <div class="expense-card">
+                <span>Mantenimiento</span>
+                <strong>156 €</strong>
+              </div>
+              <div class="expense-card">
+                <span>Combustible</span>
+                <strong>72 €</strong>
+              </div>
+              <div class="expense-card">
+                <span>ITV y tasas</span>
+                <strong>20 €</strong>
+              </div>
+            </div>
+          </article>
+          <article class="panel expense-side">
+            <p class="label">Registro rápido</p>
+            <ul class="checklist">
+              <li>Coste asociado a un coche concreto</li>
+              <li>Categoría y fecha del gasto</li>
+              <li>Posibilidad de añadir factura o nota</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen" id="estadisticas" aria-labelledby="estadisticas-title">
+        <div class="screen-header">
+          <div>
+            <p class="label">Pantalla 5</p>
+            <h3 id="estadisticas-title">Estadísticas y visión global</h3>
+          </div>
+          <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+        </div>
+
+        <div class="grid stats-grid">
+          <article class="panel stat-card">
+            <p class="label">Coste medio por coche</p>
+            <strong>82 €</strong>
+            <div class="bar-chart">
+              <span style="height: 42%;"></span>
+              <span style="height: 68%;"></span>
+              <span style="height: 54%;"></span>
+            </div>
+          </article>
+          <article class="panel stat-card">
+            <p class="label">Mantenimientos este trimestre</p>
+            <strong>14</strong>
+            <div class="bar-chart alt">
+              <span style="height: 60%;"></span>
+              <span style="height: 45%;"></span>
+              <span style="height: 78%;"></span>
+            </div>
+          </article>
+          <article class="panel stat-card wide">
+            <p class="label">Tendencia del gasto</p>
+            <div class="trend-list">
+              <div><span>Combustible</span><strong>+12%</strong></div>
+              <div><span>Revisiones</span><strong>-8%</strong></div>
+              <div><span>Neumáticos</span><strong>+4%</strong></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
