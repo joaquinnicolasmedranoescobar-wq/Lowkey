@@ -12,8 +12,8 @@ def get_dashboard_summary() -> DashboardSummary:
     return dashboard_service.get_dashboard_summary()
 
 
-@router.get("/vehicle/{vehicle_id}", response_model=VehicleSummary)
-def get_vehicle_summary(vehicle_id: int) -> VehicleSummary:
+@router.get("/{vehicle_id}", response_model=VehicleSummary)
+def get_vehicle_summary(vehicle_id: str) -> VehicleSummary:
     return dashboard_service.get_vehicle_summary(vehicle_id)
 
 

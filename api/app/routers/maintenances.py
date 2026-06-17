@@ -12,18 +12,18 @@ from app.services import maintenance_service
 router = APIRouter(prefix="/maintenances", tags=["Maintenances"])
 
 
-@router.get("/vehicle/{vehicle_id}", response_model=list[MaintenanceRead])
-def list_maintenances(vehicle_id: int) -> list[MaintenanceRead]:
+@router.get("/{vehicle_id}", response_model=list[MaintenanceRead])
+def list_maintenances(vehicle_id: str) -> list[MaintenanceRead]:
     return maintenance_service.list_maintenances(vehicle_id)
 
 
-@router.get("/vehicle/{vehicle_id}/recent", response_model=list[MaintenanceRead])
-def list_recent_maintenances(vehicle_id: int) -> list[MaintenanceRead]:
+@router.get("/{vehicle_id}/recent", response_model=list[MaintenanceRead])
+def list_recent_maintenances(vehicle_id: str) -> list[MaintenanceRead]:
     return maintenance_service.list_recent_maintenances(vehicle_id)
 
 
-@router.get("/vehicle/{vehicle_id}/upcoming-alert", response_model=MaintenanceAlert)
-def get_upcoming_maintenance_alert(vehicle_id: int) -> MaintenanceAlert:
+@router.get("/{vehicle_id}/upcoming-alert", response_model=MaintenanceAlert)
+def get_upcoming_maintenance_alert(vehicle_id: str) -> MaintenanceAlert:
     return maintenance_service.get_upcoming_maintenance_alert(vehicle_id)
 
 

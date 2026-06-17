@@ -1,38 +1,31 @@
 from datetime import date
-
 from pydantic import BaseModel, Field
 
-
 class ExpenseBase(BaseModel):
-    vehicle_id: int | None = None
+    vehicle_id: str | None = None
     category: str | None = None
     date: date | None = None
     amount: float | None = None
     description: str | None = None
 
-
 class ExpenseCreate(ExpenseBase):
-    vehicle_id: int
+    vehicle_id: str
     category: str
     date: date
     amount: float
 
-
 class ExpenseUpdate(ExpenseBase):
     pass
 
-
 class ExpenseRead(ExpenseBase):
-    id: int | None = None
-
+    id: str | None = None
 
 class ExpenseCategoryBreakdown(BaseModel):
     category: str | None = None
     amount: float | None = None
 
-
 class ExpenseBudgetSummary(BaseModel):
-    vehicle_id: int | None = None
+    vehicle_id: str | None = None
     month: str | None = None
     budget_limit: float | None = None
     total_used: float | None = None

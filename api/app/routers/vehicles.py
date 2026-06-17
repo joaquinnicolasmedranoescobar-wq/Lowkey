@@ -13,7 +13,7 @@ def list_vehicles() -> list[VehicleRead]:
 
 
 @router.get("/{vehicle_id}", response_model=VehicleRead)
-def get_vehicle(vehicle_id: int) -> VehicleRead:
+def get_vehicle(vehicle_id: str) -> VehicleRead:
     return vehicle_service.get_vehicle(vehicle_id)
 
 
@@ -23,10 +23,10 @@ def create_vehicle(payload: VehicleCreate) -> VehicleRead:
 
 
 @router.put("/{vehicle_id}", response_model=VehicleRead)
-def update_vehicle(vehicle_id: int, payload: VehicleUpdate) -> VehicleRead:
+def update_vehicle(vehicle_id: str, payload: VehicleUpdate) -> VehicleRead:
     return vehicle_service.update_vehicle(vehicle_id, payload)
 
 
 @router.delete("/{vehicle_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_vehicle(vehicle_id: int) -> None:
+def delete_vehicle(vehicle_id: str) -> None:
     vehicle_service.delete_vehicle(vehicle_id)

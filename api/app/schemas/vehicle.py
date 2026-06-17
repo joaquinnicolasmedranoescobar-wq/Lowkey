@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class VehicleBase(BaseModel):
     name: str | None = None
     plate: str | None = None
@@ -10,7 +9,6 @@ class VehicleBase(BaseModel):
     fuel_type: str | None = None
     notes: str | None = None
 
-
 class VehicleCreate(VehicleBase):
     name: str
     plate: str
@@ -18,10 +16,8 @@ class VehicleCreate(VehicleBase):
     model: str
     mileage: int
 
-
 class VehicleUpdate(VehicleBase):
     pass
 
-
 class VehicleRead(VehicleBase):
-    id: int | None = None
+    id: str | None = None
