@@ -1,7 +1,7 @@
-const registerForm = document.getElementById('registerForm');
+const loginForm = document.getElementById('loginForm');
 const errorMessage = document.getElementById('errorMessage');
 
-const defaultUsers = {
+const users = {
   jose: 'Jose Luis',
   joaquin: 'Joaquin',
   hector: 'Hector'
@@ -16,37 +16,29 @@ function readStoredUsers() {
   }
 }
 
-function saveStoredUsers(users) {
-  localStorage.setItem('lowkeyUsers', JSON.stringify(users));
-}
-
-registerForm.addEventListener('submit', (event) => {
+loginForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  const fullName = document.getElementById('fullName').value.trim();
-  const username = document.getElementById('username').value.trim().toLowerCase();
-  const password = document.getElementById('password').value.trim();
-  const confirmPassword = document.getElementById('confirmPassword').value.trim();
+  const username = document
+    .getElementById('username')
+    .value
+    .trim()
+    .toLowerCase();
+
+  const password = document
+    .getElementById('password')
+    .value
+    .trim();
   const storedUsers = readStoredUsers();
 
-  if (!fullName || !username || !password || !confirmPassword) {
-    errorMessage.textContent = 'Completa todos los campos.';
-    return;
+  if ((users[username] && password === 'admin') || (storedUsers[username] && storedUsers[username].password === password)) {
+    // Guardar nombre del usuario
+    localStorage.setItem('usuario', users[username] || storedUsers[username].fullName);
+
+    // Redirigir al dashboard
+    window.location.href = '../index.html';
+  } else {
+    errorMessage.textContent =
+      'Usuario o contraseña incorrectos.';
   }
-
-  if (password !== confirmPassword) {
-    errorMessage.textContent = 'Las contraseñas no coinciden.';
-    return;
-  }
-
-  if (defaultUsers[username] || storedUsers[username]) {
-    errorMessage.textContent = 'Ese usuario ya existe.';
-    return;
-  }
-
-  storedUsers[username] = { fullName, password };
-  saveStoredUsers(storedUsers);
-
-  localStorage.setItem('usuario', fullName);
-  window.location.href = 'login.html';
 });
