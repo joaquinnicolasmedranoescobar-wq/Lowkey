@@ -1,10 +1,10 @@
-from datetime import date
+from datetime import date as dt_date
 from pydantic import BaseModel
 
 class MaintenanceBase(BaseModel):
     vehicle_id: str | None = None
     type: str | None = None
-    date: date | None = None
+    date: dt_date | None = None
     km: int | None = None
     cost: float | None = None
     description: str | None = None
@@ -12,7 +12,7 @@ class MaintenanceBase(BaseModel):
 class MaintenanceCreate(MaintenanceBase):
     vehicle_id: str
     type: str
-    date: date
+    date: dt_date
     km: int
     cost: float
 

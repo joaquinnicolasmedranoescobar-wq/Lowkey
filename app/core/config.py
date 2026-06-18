@@ -1,8 +1,8 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import BaseSettings, Field
-
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 API_ROOT = Path(__file__).resolve().parents[2]
 ENV_FILE = API_ROOT / ".env"
